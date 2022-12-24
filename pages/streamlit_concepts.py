@@ -1,6 +1,6 @@
 import streamlit as st
-import matplotlib.pyplot as plt
-import plotly.express as px
+# import matplotlib.pyplot as plt
+# import plotly.express as px
 import pandas as pd
 import numpy as np
 import time
@@ -44,41 +44,41 @@ st.dataframe(dataframe.style.highlight_max(axis=0))
 st.write('# Charts')
 # ------------------------------------- #
 
-df = px.data.gapminder()
-
-fig = px.scatter(
-    df.query("year==2007"),
-    x="gdpPercap",
-    y="lifeExp",
-    size="pop",
-    color="continent",
-    hover_name="country",
-    log_x=True,
-    size_max=60,
-)
-
-tab1, tab2 = st.tabs(["Streamlit theme (default)", "Plotly native theme"])
-with tab1:
-    # Use the Streamlit theme.
-    # This is the default. So you can also omit the theme argument.
-    st.plotly_chart(fig, theme="streamlit", use_container_width=True)
-with tab2:
-    # Use the native Plotly theme.
-    st.plotly_chart(fig, theme=None, use_container_width=True)
-
-# ------------------------------------- #
-
-arr = np.random.normal(1, 1, size=100)
-fig, ax = plt.subplots()
-ax.hist(arr, bins=20)
-
-st.pyplot(fig)
-
-chart_data = pd.DataFrame(
-    np.random.randn(20, 3),
-    columns=['a', 'b', 'c'])
-
-st.line_chart(chart_data)
+# df = px.data.gapminder()
+#
+# fig = px.scatter(
+#     df.query("year==2007"),
+#     x="gdpPercap",
+#     y="lifeExp",
+#     size="pop",
+#     color="continent",
+#     hover_name="country",
+#     log_x=True,
+#     size_max=60,
+# )
+#
+# tab1, tab2 = st.tabs(["Streamlit theme (default)", "Plotly native theme"])
+# with tab1:
+#     # Use the Streamlit theme.
+#     # This is the default. So you can also omit the theme argument.
+#     st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+# with tab2:
+#     # Use the native Plotly theme.
+#     st.plotly_chart(fig, theme=None, use_container_width=True)
+#
+# # ------------------------------------- #
+#
+# arr = np.random.normal(1, 1, size=100)
+# fig, ax = plt.subplots()
+# ax.hist(arr, bins=20)
+#
+# st.pyplot(fig)
+#
+# chart_data = pd.DataFrame(
+#     np.random.randn(20, 3),
+#     columns=['a', 'b', 'c'])
+#
+# st.line_chart(chart_data)
 
 # ------------------------------ #
 
