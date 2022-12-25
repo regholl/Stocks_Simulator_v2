@@ -74,6 +74,8 @@ ax.hist(arr, bins=20)
 
 st.pyplot(fig)
 
+# ------------------------------ #
+
 chart_data = pd.DataFrame(
     np.random.randn(20, 3),
     columns=['a', 'b', 'c'])
@@ -87,6 +89,8 @@ map_data = pd.DataFrame(
     columns=['lat', 'lon'])
 
 st.map(map_data)
+
+# ------------------------------ #
 
 st.write('# Widgets')
 

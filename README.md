@@ -1,6 +1,14 @@
 # Stocks Simulator (version 2)
 
+## TODO:
 
+- connect alpaca
+- graph: graph of one stock
+- graphs: graphs of stock indicators down the main one
+- graph: strategy yields
+- graph: distributions of std
+- graph: correlation matrix
+- optimization options
 
 ## Credits
 
