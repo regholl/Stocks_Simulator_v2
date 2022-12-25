@@ -2,7 +2,7 @@
 
 ## TODO:
 
-- connect alpaca
+~~- connect alpaca~~
 - graph: graph of one stock
 - graphs: graphs of stock indicators down the main one
 - graph: strategy yields
@@ -21,6 +21,11 @@
 
 ### [StreamLit](https://docs.streamlit.io/library/api-reference)
 
+- [st | home](https://share.streamlit.io/)
 - [st | API](https://docs.streamlit.io/library/api-reference)
 - [st | secrets](https://docs.streamlit.io/streamlit-cloud/get-started/deploy-an-app/connect-to-data-sources/secrets-management)
 - [st | session state](https://docs.streamlit.io/library/api-reference/session-state)
+
+### [Alpaca](https://alpaca.markets/docs/market-data/)
+
+- [alpaca | market data API](https://alpaca.markets/docs/market-data/)

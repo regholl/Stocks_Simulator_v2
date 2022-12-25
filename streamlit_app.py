@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import pandas as pd
 import numpy as np
-from alpaca.trading.client import TradingClient
+# from alpaca.trading.client import TradingClient
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
@@ -26,6 +26,20 @@ def historical_data():
     return bars.df
 
 
+def life_data():
+    stock_stream = StockDataStream(API_KEY, SECRET_KEY)
+
+    async def bar_callback(bar):
+        for property_name, value in bar:
+            st.write(f"\"{property_name}\": {value}")
+
+    # Subscribing to bar event
+    symbol = "TSLA"
+    stock_stream.subscribe_bars(bar_callback, symbol)
+
+    stock_stream.run()
+
+
 bars_df = historical_data()
 bars_df['index'] = list(range(len(bars_df['open'])))
 fig = px.line(
@@ -36,15 +50,9 @@ fig = px.line(
 st.plotly_chart(fig, theme=None, use_container_width=True)
 
 
-def life_data():
-    stock_stream = StockDataStream(API_KEY, SECRET_KEY)
+# st.write('before!!!')
+# life_data()
+# st.write('after!!!')
 
-    async def bar_callback(bar):
-        for property_name, value in bar:
-            print(f"\"{property_name}\": {value}")
 
-    # Subscribing to bar event
-    symbol = "TSLA"
-    stock_stream.subscribe_bars(bar_callback, symbol)
 
-    stock_stream.run()
