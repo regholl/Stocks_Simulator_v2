@@ -17,7 +17,11 @@
 - [GitHub | Stocks Simulator (version 1)](https://github.com/Arseni1919/Stocks_Simulator_1)
 - [GitHub | Learning Streamlit](https://github.com/Arseni1919/Learning_Streamlit)
 - [YouTube | How to Deploy Your App to Streamlit Community Cloud](https://www.youtube.com/watch?v=HKoOBiAaHGg&t=44s&ab_channel=Streamlit)
+- [google| finance](https://www.google.com/finance/quote/.INX:INDEXSP)
 
+### [Plotly](https://plotly.com/python/)
+
+- [plotly | time series graphs](https://plotly.com/python/time-series/)
 
 ### [StreamLit](https://docs.streamlit.io/library/api-reference)
 
