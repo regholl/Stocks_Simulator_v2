@@ -1,6 +1,9 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import plotly.express as px
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+import datetime
 import pandas as pd
 import numpy as np
 # from alpaca.trading.client import TradingClient
@@ -9,42 +12,87 @@ from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 from alpaca.data.live import StockDataStream
 from globals import stocks_names_list
+from indicator_functions import *
+
 
 st.set_page_config(layout="wide")
 API_KEY = st.secrets.alpaca_api_key
 SECRET_KEY = st.secrets.alpaca_secret_key
 
 
-# ------------------------------------ #
-# ------------------------------------ #
-# ------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------ #
 # FUNCTIONS
-# ------------------------------------ #
-# ------------------------------------ #
-# ------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------ #
+
+def get_time_period_start(time_period):
+    # cols_names = ['1D', '5D', '1M', '6M', 'YTD', '1Y', '5Y', 'MAX']
+    start_datetime = None
+    if time_period == '1D':
+        start_datetime = datetime.datetime.today() - datetime.timedelta(days=1)
+    elif time_period == '5D':
+        start_datetime = datetime.datetime.today() - datetime.timedelta(days=5)
+    elif time_period == '1M':
+        start_datetime = datetime.datetime.today() - datetime.timedelta(days=30)
+    elif time_period == '6M':
+        start_datetime = datetime.datetime.today() - datetime.timedelta(days=180)
+    elif time_period == 'YTD':
+        start_datetime = datetime.date.today()
+    elif time_period == '1Y':
+        start_datetime = datetime.datetime.today() - datetime.timedelta(days=365)
+    elif time_period == '5Y':
+        start_datetime = datetime.datetime.today() - datetime.timedelta(days=1825)
+    elif time_period == 'MAX':
+        start_datetime = datetime.datetime.today() - datetime.timedelta(days=1825)
+    else:
+        raise RuntimeError('incorrect time period')
+    return start_datetime
+
 
 @st.cache(allow_output_mutation=True)
-def historical_data(stock):
+def historical_data(stock, time_period):
     client = StockHistoricalDataClient(API_KEY, SECRET_KEY)
     request_params = StockBarsRequest(
         symbol_or_symbols=[stock],
-        timeframe=TimeFrame.Hour,
-        start="2018-01-01 00:00:00"
+        timeframe=TimeFrame.Minute,
+        # start="2018-01-01 00:00:00"
+        start=get_time_period_start(time_period)
     )
     bars = client.get_stock_bars(request_params)
     curr_bars_df = bars.df
     curr_bars_df['datetime'] = [index[1] for index in curr_bars_df.index]
+    curr_bars_df['num'] = [num for num in range(len(curr_bars_df.index))]
     # return bars.df
     return curr_bars_df
 
 
-# ------------------------------------ #
-# ------------------------------------ #
-# ------------------------------------ #
+def set_indicator_graph(name, data_to_show):
+    st.write(f'### {name}')
+    curr_fig = px.line(bars_df, x=selected_x_axis, y=data_to_show)
+    curr_fig.update_layout(height=indicators_height, margin=dict(l=10, r=10, b=10, t=10, pad=4))
+    curr_fig.update_yaxes(title=None)
+    st.plotly_chart(curr_fig, theme=None, use_container_width=True)
+
+
+def alert_of_stock_exchange():
+    now = datetime.datetime.now()
+    st.info(f'The current date and time is **{now.strftime("%H:%M")}** ({now.strftime("%m/%d/%y")})')
+    # st.info(f'{now.hour} {type(now.hour)} {18 < now.hour < 20}')
+    if 16 <= now.hour < 20:
+        st.success('#### The US markets are opened now!')
+    else:
+        st.error('#### The US markets are closed now.')
+
+# ------------------------------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------ #
 # ST
-# ------------------------------------ #
-# ------------------------------------ #
-# ------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------------------------------------------ #
 
 # ------------------------------------ #
 # ------------------------------------ #
@@ -66,87 +114,57 @@ ma_bool = st.sidebar.checkbox('ma', value=False, disabled=False)
 # ------------------------------------ #
 # ------------------------------------ #
 
+alert_of_stock_exchange()
 st.write(f'# Stock Analysis - {selected_stock}')
 
-with st.spinner('Wait for it...'):
-    cols_names = ['1D','5D','1M','6M','YTD','1Y','5Y','MAX']
-    cols = st.columns(8)
-    for col, col_name in zip(cols, cols_names):
-        with col:
-            st.button(f'{col_name}')
-    bars_df = historical_data(selected_stock)
-    fig = px.line(bars_df, x='datetime', y='close', title='Time Series with Range Slider and Selectors')
-    fig.update_xaxes(
-        rangeslider_visible=True,
-        rangeselector=dict(
-            buttons=list([
-                dict(count=1, label="1m", step="month", stepmode="backward"),
-                dict(count=6, label="6m", step="month", stepmode="backward"),
-                dict(count=1, label="YTD", step="year", stepmode="todate"),
-                dict(count=1, label="1y", step="year", stepmode="backward"),
-                dict(step="all")
-            ])
-        )
-    )
-    st.plotly_chart(fig, theme=None, use_container_width=True)
-    expander = st.expander("See The Data")
-    expander.write(bars_df)
+cols_names = ['1D', '5D', '1M', '6M', 'YTD', '1Y', '5Y', 'MAX']
+selected_time_period = st.radio("Time Period:", cols_names, horizontal=True)
+selected_x_axis = st.radio("X-axis:", ['datetime', 'num'], horizontal=True, index=1)
 
-# bars_df['index'] = list(range(len(bars_df['open'])))
-# # index_list = list(range(len(bars_df['open'])))
-# fig = px.line(
-#     bars_df,
-#     # x=index_list,
-#     x='index',
-#     y='open'
-# )
+bars_df = historical_data(selected_stock, selected_time_period)
 
+fig = make_subplots(rows=2, cols=1, print_grid=True, shared_xaxes=True, row_heights=[0.7, 0.3])
+fig.add_trace(go.Scatter(x=bars_df[selected_x_axis], y=bars_df['close'], name='Close', mode='lines'), row=1, col=1)
+fig.add_trace(go.Scatter(x=bars_df[selected_x_axis], y=bars_df['volume'], name='Volume', fill='tozeroy', mode='lines+markers'), row=2, col=1)
+fig.update_layout(height=500, margin=dict(l=10, r=10, b=10, t=10, pad=4), legend=dict(
+    orientation="h",
+    yanchor="bottom",
+    y=1.02,
+    xanchor="right",
+    x=0.17
+))
 
+st.plotly_chart(fig, theme=None, use_container_width=True)
+expander = st.expander(f"See The '{selected_stock}' Data")
+expander.write(bars_df)
+
+# ------------------------------------ #
+# ------------------------------------ #
+# ------------------------------------ #
+# Indicators
+# ------------------------------------ #
+# ------------------------------------ #
+# ------------------------------------ #
+
+indicators_height = 300
 
 if rsi_bool:
-    st.write('here RSI graph')
+    set_indicator_graph('RSI', rsi_calc(bars_df['close']))
 
 if ma_bool:
-    st.write('here MA graph')
+    set_indicator_graph('MA', rsi_calc(bars_df['close']))
 
 # ------------------------------------ #
 # ------------------------------------ #
 # ------------------------------------ #
 
-st.subheader("Define a custom colorscale")
-df = px.data.iris()
-fig = px.scatter(
-    df,
-    x="sepal_width",
-    y="sepal_length",
-    color="sepal_length",
-    color_continuous_scale="reds",
-)
 
-tab1, tab2 = st.tabs(["Streamlit theme (default)", "Plotly native theme"])
-with tab1:
-    st.plotly_chart(fig, theme="streamlit", use_conatiner_width=True)
-with tab2:
-    st.plotly_chart(fig, theme=None, use_conatiner_width=True)
 
-df = px.data.gapminder()
-print()
-fig = px.scatter(
-    df.query("year==2007"),
-    x="gdpPercap",
-    y="lifeExp",
-    size="pop",
-    color="continent",
-    hover_name="country",
-    log_x=True,
-    size_max=60,
-)
 
-tab1, tab2 = st.tabs(["Streamlit theme (default)", "Plotly native theme"])
-with tab1:
-    # Use the Streamlit theme.
-    # This is the default. So you can also omit the theme argument.
-    st.plotly_chart(fig, theme="streamlit", use_container_width=True)
-with tab2:
-    # Use the native Plotly theme.
-    st.plotly_chart(fig, theme=None, use_container_width=True)
+
+
+# fig.add_trace(go.Scatter(x=[1, 2], y=[1, 2], name="(1,2)"), row=1, col=2)
+#
+# fig = px.line(bars_df, x=selected_x_axis, y='close', title='Close Prices')
+# st.plotly_chart(fig, theme=None, use_container_width=True)
+# fig = px.line(bars_df, x=selected_x_axis, y='volume', title='Volume')

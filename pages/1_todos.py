@@ -9,8 +9,8 @@ st.markdown('''
 ''', unsafe_allow_html=True)
 
 st.checkbox('connect alpaca', value=True, disabled=True)
-st.checkbox('graph: graph of one stock', value=False, disabled=False)
-st.checkbox('graphs: graphs of stock indicators down the main one', value=False, disabled=False)
+st.checkbox('graph: graph of one stock', value=True, disabled=True)
+st.checkbox('graphs: graphs of stock indicators down the main one', value=True, disabled=True)
 st.checkbox('graph: strategy yields', value=False, disabled=False)
 st.checkbox('graph: distributions of std', value=False, disabled=False)
 st.checkbox('graph: correlation matrix', value=False, disabled=False)

@@ -218,6 +218,44 @@ filtered_data = data[data[DATE_COLUMN].dt.hour == hour_to_filter]
 st.subheader('Map of all pickups at %s:00' % hour_to_filter)
 st.map(filtered_data)
 
+st.subheader("Define a custom colorscale")
+df = px.data.iris()
+fig = px.scatter(
+    df,
+    x="sepal_width",
+    y="sepal_length",
+    color="sepal_length",
+    color_continuous_scale="reds",
+)
+
+tab1, tab2 = st.tabs(["Streamlit theme (default)", "Plotly native theme"])
+with tab1:
+    st.plotly_chart(fig, theme="streamlit", use_conatiner_width=True)
+with tab2:
+    st.plotly_chart(fig, theme=None, use_conatiner_width=True)
+
+df = px.data.gapminder()
+print()
+fig = px.scatter(
+    df.query("year==2007"),
+    x="gdpPercap",
+    y="lifeExp",
+    size="pop",
+    color="continent",
+    hover_name="country",
+    log_x=True,
+    size_max=60,
+)
+
+tab1, tab2 = st.tabs(["Streamlit theme (default)", "Plotly native theme"])
+with tab1:
+    # Use the Streamlit theme.
+    # This is the default. So you can also omit the theme argument.
+    st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+with tab2:
+    # Use the native Plotly theme.
+    st.plotly_chart(fig, theme=None, use_container_width=True)
+
 
 
 
