@@ -131,7 +131,7 @@ bars_df = historical_data(selected_stock, selected_time_period)
 fig = make_subplots(rows=2, cols=1, print_grid=True, shared_xaxes=True, row_heights=[0.7, 0.3])
 fig.add_trace(go.Scatter(x=bars_df[selected_x_axis], y=bars_df['close'], name='Close', mode='lines'), row=1, col=1)
 fig.add_trace(go.Scatter(x=bars_df[selected_x_axis], y=bars_df['volume'], name='Volume', fill='tozeroy', mode='lines+markers'), row=2, col=1)
-fig.update_layout(height=500, margin=dict(l=10, r=10, b=10, t=10, pad=4), legend=dict(
+fig.update_layout(height=500, margin=dict(l=10, r=10, b=10, t=10, pad=10), legend=dict(
     orientation="h",
     yanchor="bottom",
     y=1.02,
