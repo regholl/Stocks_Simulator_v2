@@ -4,6 +4,7 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import datetime
+from datetime import timezone
 import pandas as pd
 import numpy as np
 # from alpaca.trading.client import TradingClient
@@ -78,10 +79,14 @@ def set_indicator_graph(name, data_to_show):
 
 
 def alert_of_stock_exchange():
-    now = datetime.datetime.now()
+    # 2:30 pm to 9 pm - UTC
+    # col1, col2 = st.columns(2)
+    now = datetime.datetime.now(timezone.utc)
+    start_time = now.replace(hour=14, minute=30, second=0, microsecond=0)
+    end_time = now.replace(hour=21, minute=0, second=0, microsecond=0)
     st.info(f'The current date and time is **{now.strftime("%H:%M")}** ({now.strftime("%m/%d/%y")})')
-    # st.info(f'{now.hour} {type(now.hour)} {18 < now.hour < 20}')
-    if 16 <= now.hour < 20:
+    # st.info(f'{start_time}, {end_time}')
+    if start_time < now < end_time:
         st.success('#### The US markets are opened now!')
     else:
         st.error('#### The US markets are closed now.')
@@ -146,13 +151,13 @@ expander.write(bars_df)
 # ------------------------------------ #
 # ------------------------------------ #
 
-indicators_height = 300
+indicators_height = 200
 
 if rsi_bool:
     set_indicator_graph('RSI', rsi_calc(bars_df['close']))
 
 if ma_bool:
-    set_indicator_graph('MA', rsi_calc(bars_df['close']))
+    set_indicator_graph('MA', macd_func(bars_df['close']))
 
 # ------------------------------------ #
 # ------------------------------------ #

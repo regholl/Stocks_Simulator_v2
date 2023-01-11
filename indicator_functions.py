@@ -44,3 +44,17 @@ def rsi_calc(close, time_period=6):
         # print(rsi_values)
     rsi_values[:time_period] = [50] * time_period
     return rsi_values
+
+
+def macd_func(close, short=8, long=22):
+    # Get the long EMA of the closing price
+    k = close.ewm(span=short, adjust=False, min_periods=short).mean()
+
+    # Get the short EMA of the closing price
+    d = close.ewm(span=long, adjust=False, min_periods=long).mean()
+
+    # Subtract the long EMA from the short EMA to get the MACD
+    macd = k - d
+    macd.fillna(0, inplace=True)
+
+    return macd
