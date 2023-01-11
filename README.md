@@ -1,4 +1,6 @@
-# Stocks Simulator (version 2)
+# [Stocks Simulator (version 2)](https://stocks-simulator.streamlit.app/)
+
+## [Streamlit Link To The Website](https://stocks-simulator.streamlit.app/)
 
 ## TODO:
 
