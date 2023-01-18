@@ -73,6 +73,9 @@ if len(data) > 0:
 st.write("""
 # _____________________________________ 
 """)
+# ------------------------------------ #
+# ------------------------------------ #
+# ------------------------------------ #
 
 st.write(f'## Day correlation matrix:')
 
@@ -81,9 +84,21 @@ color = st.select_slider('Select a day:', options=[i for i in range(len(data))])
 fig = px.imshow(data[color].corr(), text_auto=True)
 st.plotly_chart(fig)
 
+st.write(f"""
+## Analysis
+### VIXY
+Very interesting why... 
+
+$\\alpha$
+""")
+
+
 st.write("""
 # _____________________________________ 
 """)
+# ------------------------------------ #
+# ------------------------------------ #
+# ------------------------------------ #
 
 st.write('## Correlation progress through days:')
 
