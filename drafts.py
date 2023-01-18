@@ -1,4 +1,6 @@
-if 17 < 16 < 20:
-    print('a')
-else:
-    print('b')
+
+import pickle
+name = 'data_for_Correl.pickle'
+with open(name,'rb') as f:
+    data = pickle.load(f)
+    print()
